@@ -3,13 +3,21 @@
 module Ditto
   # Builds a duplicate of a record based on `Ditto::Configuration`.
   class Duplicator
-    def initialize(record, configuration)
+    def initialize(record, configuration, context = nil)
       @record = record
       @configuration = configuration
+      @context = context || DuplicationContext.new
     end
 
     def duplicate
+      @context.duplicate_of(@record) || build_duplicate
+    end
+
+    private
+
+    def build_duplicate
       new_record = @record.dup
+      @context.register(@record, new_record)
 
       reset_attributes_to_default(new_record)
       nullify_attributes(new_record)
@@ -21,8 +29,6 @@ module Ditto
 
       new_record
     end
-
-    private
 
     def reset_attributes_to_default(new_record)
       @configuration.defaulted_attributes.each do
@@ -93,7 +99,7 @@ module Ditto
           Configuration.new
         end
 
-      self.class.new(record, configuration).duplicate
+      self.class.new(record, configuration, @context).duplicate
     end
   end
 end

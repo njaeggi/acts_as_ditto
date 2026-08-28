@@ -167,6 +167,80 @@ RSpec.describe "acts_as_ditto" do
         expect(user.posts.reload.size).to eq(2)
       end
     end
+
+    context "with cyclic clone_associations" do
+      configure_ditto(User) { clone_associations :posts }
+      configure_ditto(Post) { clone_associations :user }
+
+      let!(:first_post) { user.posts.create!(title: "First post", body: "Hello world") }
+      let!(:second_post) { user.posts.create!(title: "Second post", body: "Another post") }
+
+      it "does not recurse infinitely" do
+        expect { user.ditto }.not_to raise_error
+      end
+
+      it "duplicates the complete duplication graph exactly once" do
+        duplicate = user.ditto
+
+        expect(duplicate).not_to equal(user)
+        expect(duplicate.posts.size).to eq(2)
+
+        duplicate.posts.each do |post|
+          expect(post).not_to equal(first_post)
+          expect(post).not_to equal(second_post)
+          expect(post.user).to equal(duplicate)
+        end
+      end
+    end
+
+    context "with a deeper cyclic graph" do
+      configure_ditto(User) { clone_associations :posts }
+      configure_ditto(Post) { clone_associations :comments }
+      configure_ditto(Comment) { clone_associations :post }
+
+      let!(:post) { user.posts.create!(title: "First post", body: "Hello world") }
+      let!(:first_comment) { post.comments.create!(body: "Nice post!") }
+      let!(:second_comment) { post.comments.create!(body: "Thanks for sharing.") }
+
+      it "does not recurse infinitely" do
+        expect { user.ditto }.not_to raise_error
+      end
+
+      it "duplicates the complete graph exactly once and closes every cycle" do
+        duplicate = user.ditto
+
+        expect(duplicate.posts.size).to eq(1)
+
+        duplicated_post = duplicate.posts.first
+        expect(duplicated_post).not_to equal(post)
+        expect(duplicated_post.comments.size).to eq(2)
+
+        duplicated_post.comments.each do |comment|
+          expect(comment).not_to equal(first_comment)
+          expect(comment).not_to equal(second_comment)
+          expect(comment.post).to equal(duplicated_post)
+        end
+      end
+    end
+
+    context "with a shared association referenced by multiple records" do
+      configure_ditto(User) { clone_associations :posts }
+      configure_ditto(Post) { clone_associations :category }
+
+      let!(:category) { Category.create!(name: "Tech") }
+      let!(:first_post) { user.posts.create!(title: "First post", body: "Hello world", category: category) }
+      let!(:second_post) { user.posts.create!(title: "Second post", body: "Another post", category: category) }
+
+      it "duplicates the shared record once and reuses it for every referencing record" do
+        duplicate = user.ditto
+
+        duplicated_categories = duplicate.posts.map(&:category)
+
+        expect(duplicated_categories).to all(be_new_record)
+        expect(duplicated_categories[0]).not_to equal(category)
+        expect(duplicated_categories[0]).to equal(duplicated_categories[1])
+      end
+    end
   end
 
   describe "#ditto!" do

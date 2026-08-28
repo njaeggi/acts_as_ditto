@@ -36,8 +36,13 @@ ActiveRecord::Schema.define do
 
   create_table :posts, force: true do |t|
     t.integer :user_id
+    t.integer :category_id
     t.string :title
     t.text :body
+  end
+
+  create_table :categories, force: true do |t|
+    t.string :name
   end
 
   create_table :addresses, force: true do |t|
@@ -48,6 +53,11 @@ ActiveRecord::Schema.define do
     t.string :city
     t.string :country
   end
+
+  create_table :comments, force: true do |t|
+    t.integer :post_id
+    t.string :body
+  end
 end
 
 class User < ActiveRecord::Base
@@ -57,10 +67,20 @@ end
 
 class Post < ActiveRecord::Base
   belongs_to :user
+  belongs_to :category, optional: true
+  has_many :comments
+end
+
+class Category < ActiveRecord::Base
+  has_many :posts
 end
 
 class Address < ActiveRecord::Base
   belongs_to :user
+end
+
+class Comment < ActiveRecord::Base
+  belongs_to :post
 end
 
 module DittoHelpers

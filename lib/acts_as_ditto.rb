@@ -4,6 +4,7 @@ require "active_support"
 
 require_relative "ditto/version"
 require_relative "ditto/configuration"
+require_relative "ditto/duplication_context"
 require_relative "ditto/duplicator"
 require_relative "ditto/acts_as_ditto"
 

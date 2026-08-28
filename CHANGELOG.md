@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Add duplication context to prevent cycle loops when cloning associtations. It tracks already duplicated records within a single `ditto` call and reuses them.
+
 ## [1.0.0] - 2026-08-28
 
 - Initial release.
