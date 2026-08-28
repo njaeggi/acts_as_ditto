@@ -3,7 +3,7 @@
 require_relative "lib/ditto/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "ditto"
+  spec.name = "acts_as_ditto"
   spec.version = Ditto::VERSION
   spec.authors = ["Niklas Jäggi"]
   spec.email = ["jaeggi@puzzle.ch"]
@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Ditto adds an acts_as_ditto DSL to ActiveRecord models for duplicating " \
                       "records with custom control over nullified attributes, static " \
                       "overrides, transformations, and recursively cloned associations."
-  spec.homepage = "https://github.com/njaeggi/ditto"
+  spec.homepage = "https://github.com/njaeggi/acts_as_ditto"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
   spec.metadata["homepage_uri"] = spec.homepage

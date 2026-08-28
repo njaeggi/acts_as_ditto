@@ -1,6 +1,6 @@
 # Code of Conduct
 
-"ditto" follows [The Ruby Community Conduct Guideline](https://www.ruby-lang.org/en/conduct) in all "collaborative space", which is defined as community communications channels (such as mailing lists, submitted patches, commit comments, etc.):
+"acts_as_ditto" follows [The Ruby Community Conduct Guideline](https://www.ruby-lang.org/en/conduct) in all "collaborative space", which is defined as community communications channels:
 
 * Participants will be tolerant of opposing views.
 * Participants must ensure that their language and actions are free of personal attacks and disparaging personal remarks.

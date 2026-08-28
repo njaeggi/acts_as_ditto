@@ -6,12 +6,14 @@ records with custom control
 Similar to `.dup`, but with the options like resetting attributes, applying static
 overrides, running custom transformations, or recursively cloning associations.
 
+And yes, the name comes from the Pokemon [Ditto](https://www.pokemon.com/us/pokedex/ditto), which can use its unique move transform to mirror any opposing Pokemon :D
+
 ## Installation
 
 Install the gem and add it to the application's Gemfile by executing:
 
 ```bash
-bundle add ditto
+bundle add acts_as_ditto
 ```
 
 ## Usage
@@ -106,7 +108,7 @@ what you don't want.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/njaeggi/ditto. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/njaeggi/ditto/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/njaeggi/acts_as_ditto. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/njaeggi/acts_as_ditto/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 

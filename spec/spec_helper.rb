@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "ditto"
+require "acts_as_ditto"
 require "active_record"
 
 CONNECTION_CONFIG = {
