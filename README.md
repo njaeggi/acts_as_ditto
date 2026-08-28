@@ -26,7 +26,7 @@ class Invoice < ApplicationRecord
 end
 ```
 
-### `Duplicating associatons`
+### Duplicating associatons
 
 Recursively duplicates the given associations along with the record.
 
@@ -42,7 +42,7 @@ configuration is used, otherwise they're duplicated as is.
 To duplicate multiple layers of associations, every model needs an `acts_as_ditto` configuration
 that configures which associations get cloned.
 
-### `Nullifying attributes`
+### Nullifying attributes
 
 Reset the given attributes to `nil` on the duplicate.
 
@@ -52,7 +52,7 @@ acts_as_ditto do
 end
 ```
 
-### `Reset attributes to column defaults`
+### Reset attributes to column defaults
 
 Reset the given attributes to their column default on the duplicate.
 
@@ -62,7 +62,7 @@ acts_as_ditto do
 end
 ```
 
-### `Overwrite attributes with hardcoded values`
+### Overwrite attributes with hardcoded values
 
 Overwrites the given attributes with hardcoded values on the duplicate.
 
@@ -83,9 +83,9 @@ acts_as_ditto do
 end
 ```
 
-### `Transform attribute values`
+### Transform attribute values
 
-Transform attribute vales with a block, yielded the record and the attribute's
+Transform attribute values with a block, yielded the record and the attribute's
 original value.
 
 ```ruby
@@ -95,6 +95,14 @@ acts_as_ditto do
   end
 end
 ```
+
+## Inspiration
+
+Ditto was inspired by [amoeba](https://github.com/amoeba-rb/amoeba), which solves the same problem with similar DSL logic.
+
+Ditto is opt-in rather than opt-out: you list exactly which associations to
+clone with `clone_associations`, instead of enabling everything and excluding
+what you don't want.
 
 ## Contributing
 

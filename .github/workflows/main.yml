@@ -10,15 +10,12 @@ on:
 permissions:
   contents: read
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    name: Ruby ${{ matrix.ruby }}
-    strategy:
-      matrix:
-        ruby:
-          - '3.3.0'
+env:
+  RUBY_VERSION: '3.3.0'
 
+jobs:
+  lint:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
@@ -26,7 +23,87 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby }}
+          ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
-      - name: Run the default task
-        run: bundle exec rake
+      - name: Run RuboCop
+        run: bundle exec rake rubocop
+
+  test-sqlite3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+      - name: Run specs
+        run: bundle exec rspec
+
+  test-postgresql:
+    runs-on: ubuntu-latest
+    env:
+      BUNDLE_WITH: postgresql
+      DB: postgresql
+      DITTO_TEST_HOST: localhost
+      DITTO_TEST_USERNAME: postgres
+      DITTO_TEST_PASSWORD: postgres
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ditto_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+      - name: Run specs
+        run: bundle exec rspec
+
+  test-mysql:
+    runs-on: ubuntu-latest
+    env:
+      BUNDLE_WITH: mysql
+      DB: mysql
+      DITTO_TEST_HOST: 127.0.0.1
+      DITTO_TEST_USERNAME: root
+      DITTO_TEST_PASSWORD: root
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ditto_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+      - name: Run specs
+        run: bundle exec rspec

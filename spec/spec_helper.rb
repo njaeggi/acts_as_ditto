@@ -2,9 +2,28 @@
 
 require "ditto"
 require "active_record"
-require "securerandom"
 
-ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
+CONNECTION_CONFIG = {
+  "sqlite3" => { adapter: "sqlite3", database: ":memory:" },
+  "postgresql" => {
+    adapter: "postgresql",
+    database: ENV.fetch("DITTO_TEST_DATABASE", "ditto_test"),
+    host: ENV.fetch("DITTO_TEST_HOST", "localhost"),
+    username: ENV.fetch("DITTO_TEST_USERNAME", "postgres"),
+    password: ENV.fetch("DITTO_TEST_PASSWORD", "postgres")
+  },
+  "mysql" => {
+    adapter: "mysql2",
+    database: ENV.fetch("DITTO_TEST_DATABASE", "ditto_test"),
+    host: ENV.fetch("DITTO_TEST_HOST", "127.0.0.1"),
+    username: ENV.fetch("DITTO_TEST_USERNAME", "root"),
+    password: ENV.fetch("DITTO_TEST_PASSWORD", "")
+  }
+}.freeze
+
+adapter = ENV.fetch("DB", "sqlite3")
+
+ActiveRecord::Base.establish_connection(CONNECTION_CONFIG.fetch(adapter))
 
 ActiveRecord::Schema.define do
   create_table :users, force: true do |t|
