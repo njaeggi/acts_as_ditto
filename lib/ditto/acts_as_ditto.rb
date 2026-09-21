@@ -10,7 +10,13 @@ module Ditto
     end
 
     def ditto!
-      ditto.tap(&:save!)
+      duplicate = ditto
+
+      ActiveRecord::Base.transaction do
+        duplicate.save!
+      end
+
+      duplicate
     end
   end
 

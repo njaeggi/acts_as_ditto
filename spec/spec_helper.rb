@@ -84,14 +84,25 @@ class Comment < ActiveRecord::Base
 end
 
 module DittoHelpers
-  # Applies configuration to active record class for the examples in
-  # the current group only, restoring its previous configuration afterwards.
   def configure_ditto(klass, &block)
     around do |example|
       original_configuration = klass.ditto_configuration if klass.respond_to?(:ditto_configuration)
       klass.acts_as_ditto(&block)
       example.run
       klass.ditto_configuration = original_configuration || Ditto::Configuration.new
+    end
+  end
+
+  def with_validation(klass, *args, **kwargs)
+    around do |example|
+      original_validators = klass._validators
+      original_callbacks = klass._validate_callbacks
+
+      klass.validates(*args, **kwargs)
+      example.run
+
+      klass._validators = original_validators
+      klass._validate_callbacks = original_callbacks
     end
   end
 end

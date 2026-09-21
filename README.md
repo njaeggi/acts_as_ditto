@@ -1,6 +1,6 @@
-# Ditto
+# acts_as_ditto
 
-Ditto adds an `acts_as_ditto` DSL to your ActiveRecord models for duplicating
+Adds an `acts_as_ditto` DSL to your ActiveRecord models for duplicating
 records with custom control
 
 Similar to `.dup`, but with the options like resetting attributes, applying static
@@ -27,6 +27,12 @@ class Invoice < ApplicationRecord
   end
 end
 ```
+
+`#ditto` builds the duplicate (and, with `clone_associations`, its whole
+associated graph) without persisting it.
+`#ditto!` persists that whole graph in a single transaction: if any record in
+it fails validation, nothing is saved and an `ActiveRecord::RecordInvalid` is
+raised.
 
 ### Duplicating associatons
 
@@ -100,15 +106,15 @@ end
 
 ## Inspiration
 
-Ditto was inspired by [amoeba](https://github.com/amoeba-rb/amoeba), which solves the same problem with similar DSL logic.
+acts_as_ditto was inspired by [amoeba](https://github.com/amoeba-rb/amoeba), which solves the same problem with similar DSL logic.
 
-Ditto is opt-in rather than opt-out: you list exactly which associations to
+acts_as_ditto is opt-in rather than opt-out: you list exactly which associations to
 clone with `clone_associations`, instead of enabling everything and excluding
 what you don't want.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/njaeggi/acts_as_ditto. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/njaeggi/acts_as_ditto/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/njaeggi/acts_as_ditto/issues. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/njaeggi/acts_as_ditto/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 

@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 - Add duplication context to prevent cycle loops when cloning associtations. It tracks already duplicated records within a single `ditto` call and reuses them.
+- `ditto!` now wraps persisting the duplicate graph in a transaction, validation failures now roll back the whole graph, not just the record that failed.
 
 ## [1.0.0] - 2026-08-28
 
